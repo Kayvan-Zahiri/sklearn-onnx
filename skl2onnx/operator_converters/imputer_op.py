@@ -18,6 +18,9 @@ def append_missing_indicator(scope, container, operator, input_name, imputed_nam
     """
     op = operator.raw_operator
     features = np.asarray(op.indicator_.features_, dtype=np.int64)
+    if features.size == 0:
+        container.add_node("Identity", [imputed_name], [operator.outputs[0].full_name])
+        return
     mask = scope.get_unique_variable_name("missing_mask")
     missing = op.missing_values
     if isinstance(missing, float) and np.isnan(missing):
